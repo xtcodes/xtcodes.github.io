@@ -17,35 +17,64 @@ header {
 .twibbon-app {
   margin-top: 2rem;
   text-align: center;
-  /* Mengatur lebar maksimum aplikasi agar sesuai dengan batasan canvas */
   max-width: 90vw; 
 }
 
 /* KONTROL UTAMA UKURAN VISUAL KANVAS */
 .canvas-wrapper {
-    /* Batasi agar canvas tidak melebihi lebar/tinggi viewport yang ditetapkan di JS */
     max-width: 90vw;
     max-height: 60vh;
-    /* Agar canvas selalu berada di tengah wrapper yang mungkin lebih besar */
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Memaksa wrapper untuk memiliki rasio 1:1 jika memungkinkan, 
-       namun ukuran akhirnya ditentukan oleh JS */
     margin: 0 auto;
-    width: min(90vw, 60vh); /* Ini membantu menjaga wrapper tetap 1:1 secara visual */
+    width: min(90vw, 60vh);
+    
+    /* PENTING untuk positioning drop-overlay */
+    position: relative; 
+    cursor: pointer;
 }
 
 canvas {
   border: 1px solid #ccc;
-  /* Hapus width: 100%; */
-  /* Biarkan ukuran visual kanvas ditentukan oleh atribut width/height di JS.
-     max-width dan height: auto memastikan ia diskalakan secara visual
-     agar sesuai dengan wrapper-nya tanpa distorsi. */
   max-width: 100%;
   height: auto;
-  display: block; /* Menghilangkan spasi bawah yang mungkin muncul pada elemen inline */
+  display: block;
 }
+
+/* STYLE BARU UNTUK DROP AREA/OVERLAY */
+.drop-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.9); /* Latar putih transparan */
+    color: #333;
+    font-size: 1.2rem;
+    text-align: center;
+    border: 3px dashed transparent; /* Default border */
+    transition: opacity 0.3s, background-color 0.2s;
+    z-index: 10; /* Pastikan di atas canvas */
+}
+
+/* Visual Feedback saat file diseret */
+.drag-over {
+    border: 3px dashed #1e90ff; /* Border biru putus-putus */
+    background-color: rgba(173, 216, 230, 0.7); /* Latar biru muda */
+}
+
+/* Kelas untuk menonaktifkan drop area (setelah gambar diunggah) */
+.drop-disabled {
+    opacity: 0;
+    pointer-events: none; /* Menonaktifkan interaksi mouse pada overlay */
+}
+
+/* ... existing styles for img, controls, button ... */
 
 img {
   width: 100%;
