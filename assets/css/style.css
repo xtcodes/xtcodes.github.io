@@ -17,11 +17,34 @@ header {
 .twibbon-app {
   margin-top: 2rem;
   text-align: center;
+  /* Mengatur lebar maksimum aplikasi agar sesuai dengan batasan canvas */
+  max-width: 90vw; 
+}
+
+/* KONTROL UTAMA UKURAN VISUAL KANVAS */
+.canvas-wrapper {
+    /* Batasi agar canvas tidak melebihi lebar/tinggi viewport yang ditetapkan di JS */
+    max-width: 90vw;
+    max-height: 60vh;
+    /* Agar canvas selalu berada di tengah wrapper yang mungkin lebih besar */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Memaksa wrapper untuk memiliki rasio 1:1 jika memungkinkan, 
+       namun ukuran akhirnya ditentukan oleh JS */
+    margin: 0 auto;
+    width: min(90vw, 60vh); /* Ini membantu menjaga wrapper tetap 1:1 secara visual */
 }
 
 canvas {
   border: 1px solid #ccc;
-  width: 100%;
+  /* Hapus width: 100%; */
+  /* Biarkan ukuran visual kanvas ditentukan oleh atribut width/height di JS.
+     max-width dan height: auto memastikan ia diskalakan secara visual
+     agar sesuai dengan wrapper-nya tanpa distorsi. */
+  max-width: 100%;
+  height: auto;
+  display: block; /* Menghilangkan spasi bawah yang mungkin muncul pada elemen inline */
 }
 
 img {
