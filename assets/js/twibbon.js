@@ -3,49 +3,66 @@ const ctx = canvas.getContext('2d');
 let userImage = null;
 let overlayImage = null;
 
-// Tentukan ukuran canvas responsive
-function setCanvasSize() {
+// Tentukan ukuran SISI persegi maksimum yang diizinkan
+function getSquareSize() {
   const maxWidth = window.innerWidth * 0.9;
   const maxHeight = window.innerHeight * 0.6;
+  return Math.min(maxWidth, maxHeight);
+}
 
-  // Kalau tidak ada gambar, default
+// Tentukan ukuran canvas (selalu 1:1) saat pertama kali atau tidak ada gambar
+function setCanvasSize() {
+  const squareSize = getSquareSize();
+  
   if(!userImage){
-    canvas.width = maxWidth;
-    canvas.height = maxHeight;
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // Atur canvas ke ukuran persegi maksimum
+    canvas.width = squareSize;
+    canvas.height = squareSize;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Teks placeholder opsional
+    ctx.fillStyle = '#ccc';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#333';
+    ctx.font = '20px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Unggah Gambar di Sini', squareSize / 2, squareSize / 2);
+  } else {
+    // Jika sudah ada gambar, panggil drawCanvas untuk mengatur ulang ukuran dan menggambar
+    drawCanvas();
   }
 }
 
-// Fungsi draw proporsional
+// Fungsi draw (memaksa 1:1 dan gambar menggunakan metode "cover")
 function drawCanvas() {
-  if(!userImage) return;
+  if(!userImage) return setCanvasSize(); // Jika userImage hilang, kembali ke default
 
-  const maxWidth = window.innerWidth * 0.9;
-  const maxHeight = window.innerHeight * 0.6;
+  const squareSize = getSquareSize();
 
-  // Rasio proporsional
-  const imgRatio = userImage.width / userImage.height;
-  const maxRatio = maxWidth / maxHeight;
+  // 1. Atur dimensi internal canvas (piksel) agar selalu persegi (1:1)
+  canvas.width = squareSize;
+  canvas.height = squareSize;
 
-  let drawWidth, drawHeight;
+  // 2. Hitung skala dan posisi untuk menggambar gambar (metode "cover")
+  // Faktor skala terbesar (max) memastikan gambar memenuhi seluruh canvas, sehingga terjadi cropping
+  const scale = Math.max(squareSize / userImage.width, squareSize / userImage.height);
+  
+  const scaledWidth = userImage.width * scale;
+  const scaledHeight = userImage.height * scale;
+  
+  // Hitung offset agar gambar terpusat
+  const offsetX = (squareSize - scaledWidth) / 2;
+  const offsetY = (squareSize - scaledHeight) / 2;
 
-  if(imgRatio > maxRatio){
-    // Landscape → width penuh
-    drawWidth = maxWidth;
-    drawHeight = drawWidth / imgRatio;
-  } else {
-    // Portrait → height penuh
-    drawHeight = maxHeight;
-    drawWidth = drawHeight * imgRatio;
-  }
+  // Hapus canvas sebelumnya
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Gambar userImage (terpusat dan cover)
+  // drawImage(image, dx, dy, dWidth, dHeight)
+  ctx.drawImage(userImage, offsetX, offsetY, scaledWidth, scaledHeight);
 
-  canvas.width = drawWidth;
-  canvas.height = drawHeight;
-
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.drawImage(userImage, 0, 0, canvas.width, canvas.height);
-
+  // Gambar overlayImage
   if(overlayImage){
+    // drawImage(image, dx, dy, dWidth, dHeight)
     ctx.drawImage(overlayImage, 0, 0, canvas.width, canvas.height);
   }
 }
@@ -57,8 +74,8 @@ document.getElementById('uploadImage').addEventListener('change', (e)=>{
   const img = new Image();
   img.onload = () => {
     userImage = img;
-    overlayImage = null;
-    drawCanvas();
+    overlayImage = null; // Reset overlay saat gambar baru diunggah
+    drawCanvas(); // Gambar dengan gambar baru
   }
   img.src = URL.createObjectURL(file);
 });
@@ -66,12 +83,15 @@ document.getElementById('uploadImage').addEventListener('change', (e)=>{
 // Pasang twibbon
 document.getElementById('btnTwibbon').addEventListener('click', ()=>{
   if(!userImage) return alert("Upload dulu gambar!");
+  // Asumsi: Anda memiliki '/assets/img/twibbon.png'
   const overlay = new Image();
+  overlay.crossOrigin = "Anonymous"; // Penting untuk mencegah masalah CORS saat toDataURL
   overlay.onload = () => {
     overlayImage = overlay;
     drawCanvas();
   }
-  overlay.src = '/assets/img/twibbon.png';
+  // Ganti dengan path twibbon yang benar
+  overlay.src = '/assets/img/twibbon.png'; 
 });
 
 // Unduh
@@ -79,18 +99,35 @@ document.getElementById('btnDownload').addEventListener('click', ()=>{
   if(!userImage) return alert("Tidak ada gambar!");
   const link = document.createElement('a');
   link.download = 'twibbon.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+  // Penting: Pastikan gambar twibbon (overlay) dimuat dari domain yang sama
+  // atau disajikan dengan header CORS yang benar, jika tidak toDataURL akan gagal.
+  try {
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+  } catch (error) {
+      alert("Gagal mengunduh. Pastikan gambar twibbon dimuat dari sumber yang aman.");
+      console.error(error);
+  }
 });
 
 // Bagikan
 document.getElementById('btnShare').addEventListener('click', ()=>{
   if(!userImage) return alert("Tidak ada gambar!");
-  const url = canvas.toDataURL('image/png');
-  prompt("Salin link ini:", url);
+  // Untuk fungsionalitas share yang sebenarnya, Anda mungkin perlu mengunggah 
+  // gambar ke server terlebih dahulu dan mendapatkan URL publik.
+  // Prompt ini hanya untuk demonstrasi base64 string.
+  try {
+      const url = canvas.toDataURL('image/png');
+      prompt("Salin Base64 string ini:", url);
+  } catch (error) {
+      alert("Gagal membuat link. Pastikan gambar twibbon dimuat dari sumber yang aman.");
+  }
 });
 
 // Responsive saat resize
 window.addEventListener('resize', () => {
   drawCanvas();
 });
+
+// Panggil saat halaman dimuat
+setCanvasSize();
