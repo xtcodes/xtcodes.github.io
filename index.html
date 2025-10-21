@@ -3,14 +3,24 @@ layout: default
 title: Halaman Utama
 ---
 
-<div class="twibbon-app"> 
-    <div class="canvas-wrapper"> 
-        <canvas id="twibbonCanvas"></canvas> 
-    </div> 
-    <div class="controls"> 
-        <input type="file" id="uploadImage" accept="image/*"> 
-        <button id="btnTwibbon">Pasang Twibbon</button> 
-        <button id="btnDownload">Unduh</button> 
-        <button id="btnShare">Bagikan</button> 
-    </div> 
-</div>
+    <div class="twibbon-app">
+        
+        <!-- Input file disembunyikan, akan dipicu oleh klik pada dropArea -->
+        <input type="file" id="uploadImage" accept="image/*" style="display: none;">
+
+        <!-- Drop Area / Preview Area -->
+        <div class="canvas-wrapper" id="dropArea"> 
+            <canvas id="twibbonCanvas"></canvas>
+            <!-- Overlay untuk teks panduan drop -->
+            <div id="dropOverlay" class="drop-overlay">
+                Unggah atau seret gambar di sini
+            </div>
+        </div>
+        
+        <div class="controls">
+            <!-- input[type="file"] dipindahkan dan disembunyikan -->
+            <button id="btnTwibbon">Pasang Twibbon</button>
+            <button id="btnDownload">Unduh</button>
+            <button id="btnShare">Bagikan</button>
+        </div>
+    </div>
