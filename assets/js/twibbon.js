@@ -9,13 +9,20 @@ const dropOverlay = document.getElementById('dropOverlay');
 const alertBox = document.getElementById('alert'); // elemen teks alert
 
 // --- Fungsi tampilkan pesan ---
-function showAlert(message) {
-  const alertBox = document.getElementById('alert');
+function showAlert(message, type = "info") {
+  const alertBox = document.getElementById("alert");
+  if (!alertBox) return;
+
+  // Hapus hanya class alert-type, tanpa reset ID
+  alertBox.classList.remove("info", "success", "warning", "error", "show");
+
   alertBox.textContent = message;
-  alertBox.classList.add('show');
-  setTimeout(() => {
-    alertBox.classList.remove('show');
-  }, 3000); // hilang dalam 3 detik
+  alertBox.classList.add(type, "show");
+
+  clearTimeout(alertBox.timer);
+  alertBox.timer = setTimeout(() => {
+    alertBox.classList.remove("show");
+  }, 3000);
 }
 
 // --- Fungsi Helper ---
