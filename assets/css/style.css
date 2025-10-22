@@ -16,83 +16,88 @@ header {
 
 .twibbon-app {
   margin: 5rem auto;
-  padding: 2rem;
+	padding: 2rem;
   width: 600px;
   box-sizing: border-box; 
 }
 
-/* --- AREA CANVAS RESPONSIVE (PERBAIKAN) --- */
 .canvas-container {
-  width: 100%;
-  margin-bottom: 0.5rem;
+    /* Pastikan container kanvas mengisi lebar twibbon-app */
+    width: 100%;
+    margin-bottom: 0.5rem; 
 }
 
 .canvas-sizer {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1; /* membuat tetap persegi tapi fleksibel */
-  overflow: hidden;
+    width: 100%;
+    padding-bottom: 100%; 
+    position: relative;
+    overflow: hidden;
 }
 
 .canvas-wrapper {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    cursor: pointer;
+    
+    border: 1px solid #ccc; 
+    box-sizing: border-box; 
 }
 
 canvas {
+  width: 100%; 
+  height: 100%; 
   display: block;
-  width: 100%;
-  height: 100%;
-  border: none;
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  border: none; 
 }
 
-/* --- STYLE UNTUK DROP AREA/OVERLAY --- */
+/* STYLE UNTUK DROP AREA/OVERLAY */
 .drop-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box; 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #333;
-  font-size: 1.2rem;
-  text-align: center;
-  border: 3px dashed transparent; 
-  transition: opacity 0.3s, background-color 0.2s;
-  z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    box-sizing: border-box; 
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    font-size: 1.2rem;
+    text-align: center;
+    
+    border: 3px dashed transparent; 
+    transition: opacity 0.3s, background-color 0.2s;
+    z-index: 10;
 }
 
 /* KELAS: Untuk menampilkan border dotted/dashed saat siap unggah */
 .drop-ready {
-  border: 3px dashed #999; 
+    border: 3px dashed #999; 
 }
 
 /* Visual Feedback saat file diseret */
 .drag-over {
-  border: 3px dashed #1e90ff; 
-  background-color: rgba(173, 216, 230, 0.7); 
+    border: 3px dashed #1e90ff; 
+    background-color: rgba(173, 216, 230, 0.7); 
 }
 
 /* Kelas untuk menonaktifkan drop area (setelah gambar diunggah) */
 .drop-disabled {
-  opacity: 0;
-  pointer-events: none; 
+    opacity: 0;
+    pointer-events: none; 
 }
 
 img {
@@ -126,17 +131,16 @@ img {
   min-width: 40px; 
   height: 40px; 
   flex-shrink: 0; 
+  
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 1.2rem; 
 }
 
-/* --- Responsif untuk layar kecil --- */
-@media (max-width: 700px) {
-  .twibbon-app {
-    margin: 0 auto;
-    width: 95%;
-    padding: 1rem;
+	@media (max-width: 700px) {
+    .twibbon-app {
+      margin: 0 auto;
+      width: auto;
+    }
   }
-}
