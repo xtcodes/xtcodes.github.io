@@ -9,11 +9,10 @@ const dropOverlay = document.getElementById('dropOverlay');
 
 // --- Fungsi Helper ---
 
-// Tentukan ukuran SISI persegi maksimum yang diizinkan
+// Tentukan ukuran SISI persegi: Ambil ukuran visual aktual dari elemen dropArea (piksel)
 function getSquareSize() {
-  const maxWidth = window.innerWidth * 0.9;
-  const maxHeight = window.innerHeight * 0.6;
-  return Math.min(maxWidth, maxHeight);
+  // clientWidth memberikan lebar area visual yang ditentukan oleh CSS
+  return dropArea.clientWidth; 
 }
 
 // Mengaktifkan atau menonaktifkan drop area
@@ -28,7 +27,7 @@ function toggleUploadState(enabled) {
         // Nonaktifkan upload: sembunyikan overlay, hapus border, dan hapus listeners
         dropOverlay.classList.add('drop-disabled');
         dropOverlay.classList.remove('drop-ready');
-        removeDropListeners(); // Hanya hapus listeners saat disabled
+        removeDropListeners();
         dropArea.style.cursor = 'default';
     }
 }
@@ -39,7 +38,7 @@ function drawCanvas() {
 
   const squareSize = getSquareSize();
 
-  // 1. Atur dimensi internal canvas (piksel) agar selalu persegi (1:1)
+  // 1. Atur dimensi internal canvas (PIKSEL) diatur berdasarkan ukuran visual
   canvas.width = squareSize;
   canvas.height = squareSize;
 
@@ -56,11 +55,9 @@ function drawCanvas() {
   ctx.drawImage(userImage, offsetX, offsetY, scaledWidth, scaledHeight);
 
   if(overlayImage){
-    // Gambar overlayImage di atas
     ctx.drawImage(overlayImage, 0, 0, canvas.width, canvas.height);
   }
   
-  // Matikan drop area setelah gambar berhasil digambar
   toggleUploadState(false);
 }
 
@@ -69,12 +66,11 @@ function setCanvasSize() {
   const squareSize = getSquareSize();
   
   if(!userImage){
-    // Atur canvas ke ukuran persegi maksimum
+    // Atur canvas ke ukuran persegi yang dibaca dari CSS
     canvas.width = squareSize;
     canvas.height = squareSize;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Tambahkan background putih polos agar overlay terlihat jelas
     ctx.fillStyle = '#fff'; 
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -88,7 +84,7 @@ function setCanvasSize() {
 // --- Handler Drag/Drop ---
 
 function handleDragOver(e) {
-    e.preventDefault(); // Diperlukan untuk memungkinkan drop
+    e.preventDefault(); 
     dropOverlay.classList.add('drag-over');
 }
 
@@ -109,12 +105,10 @@ function handleDrop(e) {
 
 // Pasang listeners
 function setupDropListeners() {
-    // Hapus dulu untuk mencegah duplikasi jika dipanggil berkali-kali
     removeDropListeners(); 
     dropArea.addEventListener('dragover', handleDragOver);
     dropArea.addEventListener('dragleave', handleDragLeave);
     dropArea.addEventListener('drop', handleDrop);
-    // Tambahkan event untuk mencegah drop default pada seluruh window
     document.body.addEventListener('dragover', (e) => e.preventDefault());
     document.body.addEventListener('drop', (e) => e.preventDefault());
 }
@@ -131,20 +125,19 @@ function removeDropListeners() {
 function processFile(file) {
     if(!file || !file.type.startsWith('image/')) return;
     
-    // Matikan interaksi drop sementara saat memuat gambar
     toggleUploadState(false); 
 
     const img = new Image();
     img.onload = () => {
         userImage = img;
-        overlayImage = null; // Reset overlay
+        overlayImage = null; 
         drawCanvas();
-        URL.revokeObjectURL(img.src); // Bersihkan memori
+        URL.revokeObjectURL(img.src); 
     }
     img.onerror = () => {
         alert("Gagal memuat gambar. Coba lagi.");
         userImage = null;
-        setCanvasSize(); // Kembali ke kondisi awal, mengaktifkan drop area
+        setCanvasSize(); 
     }
     img.src = URL.createObjectURL(file);
 }
@@ -162,7 +155,7 @@ dropArea.addEventListener('click', () => {
 uploadInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if(file) processFile(file);
-    e.target.value = ''; // Reset input agar event 'change' dapat dipicu lagi dengan file yang sama
+    e.target.value = ''; // Reset input
 });
 
 
@@ -175,7 +168,6 @@ document.getElementById('btnTwibbon').addEventListener('click', ()=>{
     overlayImage = overlay;
     drawCanvas();
   }
-  // Ganti dengan path twibbon yang benar
   overlay.src = '/assets/img/twibbon.png'; 
 });
 
@@ -206,7 +198,7 @@ document.getElementById('btnShare').addEventListener('click', ()=>{
 
 // Responsive saat resize
 window.addEventListener('resize', () => {
-  setCanvasSize(); // setCanvasSize akan memastikan ukuran canvas dan status drop area
+  setCanvasSize(); 
 });
 
 // Panggil saat halaman dimuat untuk inisialisasi awal
