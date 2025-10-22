@@ -9,16 +9,13 @@ const dropOverlay = document.getElementById('dropOverlay');
 const alertBox = document.getElementById('alert'); // elemen teks alert
 
 // --- Fungsi tampilkan pesan ---
-function showMessage(msg, color = "#d33") {
-  alertBox.textContent = msg;
-  alertBox.style.color = color;
-  alertBox.style.opacity = "1";
-
-  // Hilangkan setelah 3 detik
+function showAlert(message) {
+  const alertBox = document.getElementById('alert');
+  alertBox.textContent = message;
+  alertBox.classList.add('show');
   setTimeout(() => {
-    alertBox.style.opacity = "0";
-    alertBox.textContent = "";
-  }, 3000);
+    alertBox.classList.remove('show');
+  }, 3000); // hilang dalam 3 detik
 }
 
 // --- Fungsi Helper ---
@@ -109,7 +106,7 @@ function removeDropListeners() {
 // --- Proses File ---
 function processFile(file) {
   if(!file || !file.type.startsWith('image/')) {
-    showMessage("File harus berupa gambar!");
+    showAlert("File harus berupa gambar!");
     return;
   }
   toggleUploadState(false); 
@@ -120,12 +117,12 @@ function processFile(file) {
     overlayImage = null; 
     drawCanvas();
     URL.revokeObjectURL(img.src); 
-    showMessage("Gambar berhasil diunggah ✅", "#008000");
+    showAlert("Gambar berhasil diunggah ✅", "#008000");
   };
   img.onerror = () => {
     userImage = null;
     setCanvasSize(); 
-    showMessage("Gagal memuat gambar. Coba lagi.");
+    showAlert("Gagal memuat gambar. Coba lagi.");
   };
   img.src = URL.createObjectURL(file);
 }
@@ -149,7 +146,7 @@ document.getElementById('btnTwibbon').addEventListener('click', ()=>{
   overlay.onload = () => {
     overlayImage = overlay;
     drawCanvas();
-    showMessage("Twibbon berhasil diterapkan ✅", "#008000");
+    showAlert("Twibbon berhasil diterapkan ✅", "#008000");
   };
   overlay.src = '/assets/img/twibbon.png'; 
 });
@@ -169,10 +166,10 @@ document.getElementById('btnDownload').addEventListener('click', ()=>{
     link.download = filename;
     link.href = canvas.toDataURL('image/png');
     link.click();
-    showMessage(`Gambar diunduh: ${filename}`, "#008000");
+    showAlert(`Gambar diunduh: ${filename}`, "#008000");
   } catch (error) {
     console.error(error);
-    showMessage("Gagal mengunduh gambar!");
+    showAlert("Gagal mengunduh gambar!");
   }
 });
 
@@ -190,13 +187,13 @@ document.getElementById('btnShare').addEventListener('click', async ()=>{
         text: 'Lihat hasil twibbon saya!',
         files: [file],
       });
-      showMessage("Berhasil dibagikan 🎉", "#008000");
+      showAlert("Berhasil dibagikan 🎉", "#008000");
     } else {
-      showMessage("Browser tidak mendukung fitur berbagi file ini.");
+      showAlert("Browser tidak mendukung fitur berbagi file ini.");
     }
   } catch (error) {
     console.error(error);
-    showMessage("Gagal membagikan gambar!");
+    showAlert("Gagal membagikan gambar!");
   }
 });
 
