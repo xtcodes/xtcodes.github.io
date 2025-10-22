@@ -17,8 +17,8 @@ header {
 .twibbon-app {
   margin-top: 2rem;
   /* Batasi ukuran visual maksimum app relatif terhadap viewport */
-  width: 600px; /* Contoh lebar maksimum di desktop */
-/*  width: 90%;  Selalu 90% dari lebar parent (body) */
+  width: 700px; /* Contoh lebar maksimum di desktop */
+  width: 90%; /* Selalu 90% dari lebar parent (body) */
 }
 
 /* KONTROL UTAMA UKURAN VISUAL KANVAS/DROP AREA */
@@ -150,10 +150,3 @@ img {
   font-size: 1.2rem; /* Atur ukuran ikon */
   }
 
-
-@media (max-width: 700px) {
-.twibbon-app {
-  margin: 0 auto;
-  width: auto;
-}
-}
