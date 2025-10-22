@@ -16,18 +16,9 @@ header {
 
 .twibbon-app {
   margin-top: 2rem;
-  
-  /* PERUBAHAN UTAMA UNTUK 100% LEBAR */
-  /* Hapus max-width */
-  width: 100%; 
-  /* Tambahkan padding horizontal 20px untuk jarak tepi, 
-     dan hilangkan padding atas/bawah agar margin-top tetap berfungsi */
-  padding: 0 20px; 
-  /* Gunakan box-sizing agar padding tidak menambah lebar di luar 100% */
+  width: 600px;
   box-sizing: border-box; 
 }
-
-/* KONTROL UTAMA UKURAN VISUAL KANVAS/DROP AREA */
 
 .canvas-container {
     /* Pastikan container kanvas mengisi lebar twibbon-app */
@@ -35,7 +26,6 @@ header {
     margin-bottom: 0.5rem; 
 }
 
-/* Padding Hack untuk rasio 1:1 (Persegi) */
 .canvas-sizer {
     width: 100%;
     padding-bottom: 100%; 
@@ -43,13 +33,6 @@ header {
     overflow: hidden;
 }
 
-/* ... (Sisa style untuk .canvas-wrapper, canvas, .drop-overlay, .controls, dll. 
-     TIDAK PERLU BERUBAH karena sudah menggunakan width: 100%) ... */
-/* ... (Karena sekarang semuanya berada di dalam .twibbon-app yang memiliki padding/margin 20px) ... */
-
-/* ... (lanjutan style.css yang sudah ada) ... */
-
-/* Wrapper menempati seluruh area yang dibuat oleh sizer */
 .canvas-wrapper {
     position: absolute; 
     top: 0;
@@ -153,3 +136,4 @@ img {
   align-items: center;
   font-size: 1.2rem; 
 }
+
