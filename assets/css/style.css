@@ -156,6 +156,10 @@ img {
   transition: opacity 0.4s ease;
   z-index: 9999;
   border: 1px solid rgba(255, 255, 255, 0.25);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 90vw;
 }
 
 /* efek muncul */
