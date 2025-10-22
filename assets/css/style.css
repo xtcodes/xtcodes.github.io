@@ -39,7 +39,7 @@ header {
 
 /* Wrapper menempati seluruh area yang dibuat oleh sizer */
 .canvas-wrapper {
-    position: absolute; /* Posisikan wrapper secara absolut di dalam sizer */
+    position: absolute; 
     top: 0;
     left: 0;
     width: 100%; 
@@ -50,6 +50,11 @@ header {
     align-items: center;
     
     cursor: pointer;
+    
+    /* PERBAIKAN 1: Pindahkan border ke wrapper */
+    border: 1px solid #ccc; 
+    /* PERBAIKAN 2: Gunakan border-box agar border tidak menambah dimensi width/height */
+    box-sizing: border-box; 
 }
 
 canvas {
@@ -57,7 +62,8 @@ canvas {
   width: 100%; 
   height: 100%; 
   display: block;
-  border: 1px solid #ccc;
+  /* PERBAIKAN 3: Hapus border dari kanvas */
+  border: none; 
 }
 
 /* STYLE UNTUK DROP AREA/OVERLAY */
@@ -67,28 +73,36 @@ canvas {
     left: 0;
     width: 100%;
     height: 100%;
+    
+    /* PERBAIKAN 4: Drop Overlay juga harus menggunakan border-box */
+    box-sizing: border-box; 
+    
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    
     background-color: rgba(255, 255, 255, 0.9);
     color: #333;
     font-size: 1.2rem;
     text-align: center;
-    border: 3px dashed transparent; 
+    
+    border: 3px dashed transparent; /* Akan diganti oleh .drop-ready atau .drag-over */
     transition: opacity 0.3s, background-color 0.2s;
     z-index: 10;
 }
 
-/* KELAS BARU: Untuk menampilkan border dotted/dashed saat siap unggah */
+/* KELAS: Untuk menampilkan border dotted/dashed saat siap unggah */
 .drop-ready {
-    border: 3px dashed #999; /* Border abu-abu putus-putus saat siap */
+    /* Border putus-putus saat siap unggah */
+    border: 3px dashed #999; 
 }
 
 /* Visual Feedback saat file diseret */
 .drag-over {
-    border: 3px dashed #1e90ff; /* Border biru putus-putus */
-    background-color: rgba(173, 216, 230, 0.7); /* Latar biru muda */
+    /* Border putus-putus saat drag over */
+    border: 3px dashed #1e90ff; 
+    background-color: rgba(173, 216, 230, 0.7); 
 }
 
 /* Kelas untuk menonaktifkan drop area (setelah gambar diunggah) */
@@ -102,12 +116,12 @@ img {
   height: auto;
 }
 
-/* --- PERUBAHAN Tombol (Menggunakan Flexbox) --- */
+/* --- Pengaturan Tombol (Menggunakan Flexbox) --- */
 .controls {
   margin-top: 1rem;
   display: flex; 
   gap: 0.5rem;   
-  width: 100%;  /* PENTING: Tombol sejajar dengan lebar kanvas (100% dari .twibbon-app) */
+  width: 100%;  /* PENTING: Tombol sejajar dengan lebar kanvas */
 }
 
 .controls button {
@@ -134,4 +148,4 @@ img {
   justify-content: center;
   align-items: center;
   font-size: 1.2rem; /* Atur ukuran ikon */
-                           }
+  }
