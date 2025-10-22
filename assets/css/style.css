@@ -172,10 +172,10 @@ img {
 }
 
 /* Warna teks dinamis */
-#alert.info { color: #2196F3; }       /* biru lembut */
-#alert.success { color: #04AA6D; }    /* hijau terang */
-#alert.warning { color: #ff9800; }    /* kuning */
-#alert.error { color: #f44336; }      /* merah */
+#alert.info { color: #d9edf7; }       /* biru lembut */
+#alert.success { color: #dff0d8; }    /* hijau terang */
+#alert.warning { color: #fcf8e3; }    /* kuning */
+#alert.error { color: #f2dede; }      /* merah */
 
 @media (max-width: 700px) {
 	.twibbon-app {
