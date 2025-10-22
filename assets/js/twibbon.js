@@ -171,17 +171,31 @@ document.getElementById('btnTwibbon').addEventListener('click', ()=>{
   overlay.src = '/assets/img/twibbon.png'; 
 });
 
-// Unduh
+// Unduh dengan nama file otomatis (nama hosting + tanggal)
 document.getElementById('btnDownload').addEventListener('click', ()=>{
-  if(!userImage) return alert("Tidak ada gambar!");
+  if (!userImage) return alert("Tidak ada gambar!");
+
+  // Ambil nama hosting, contoh: twibbonku.com
+  const hostname = window.location.hostname.replace(/^www\./, '') || 'twibbon';
+
+  // Ambil tanggal saat ini
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = now.getFullYear();
+
+  // Gabungkan jadi nama file
+  const filename = `${hostname}_${day}-${month}-${year}.png`;
+
+  // Proses unduh
   const link = document.createElement('a');
-  link.download = 'twibbon.png';
   try {
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+    link.download = filename;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
   } catch (error) {
-      alert("Gagal mengunduh. Pastikan gambar twibbon dimuat dari sumber yang sama.");
-      console.error(error);
+    alert("Gagal mengunduh. Pastikan gambar twibbon dimuat dari sumber yang sama.");
+    console.error(error);
   }
 });
 
