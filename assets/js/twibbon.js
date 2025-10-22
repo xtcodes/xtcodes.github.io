@@ -185,14 +185,27 @@ document.getElementById('btnDownload').addEventListener('click', ()=>{
   }
 });
 
-// Bagikan
-document.getElementById('btnShare').addEventListener('click', ()=>{
-  if(!userImage) return alert("Tidak ada gambar!");
+// Bagikan menggunakan Web Share API
+document.getElementById('btnShare').addEventListener('click', async ()=>{
+  if (!userImage) return alert("Tidak ada gambar!");
+
   try {
-      const url = canvas.toDataURL('image/png');
-      prompt("Salin Base64 string ini:", url);
+    // Ubah hasil canvas jadi blob agar bisa dibagikan sebagai file
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    const file = new File([blob], 'twibbon.png', { type: 'image/png' });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        title: 'Twibbon Saya 🎉',
+        text: 'Lihat hasil twibbon saya!',
+        files: [file],
+      });
+    } else {
+      alert("Perangkat ini tidak mendukung fitur Web Share API dengan file.");
+    }
   } catch (error) {
-      alert("Gagal membuat link. Pastikan gambar twibbon dimuat dari sumber yang sama.");
+    console.error(error);
+    alert("Gagal membagikan gambar. Pastikan browser mendukung Web Share API.");
   }
 });
 
