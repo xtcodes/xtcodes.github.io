@@ -16,37 +16,33 @@ header {
 
 .twibbon-app {
   margin-top: 2rem;
-  text-align: center;
-  /* Mengatur lebar maksimum aplikasi agar sesuai dengan batasan canvas */
+  /* Hapus text-align: center agar Flexbox controls bekerja */
+  /* text-align: center; */ 
   max-width: 90vw; 
 }
 
 /* KONTROL UTAMA UKURAN VISUAL KANVAS/DROP AREA */
 .canvas-wrapper {
-    /* Batasi agar canvas tidak melebihi lebar/tinggi viewport yang ditetapkan di JS */
     max-width: 90vw;
     max-height: 60vh;
-    /* Agar canvas selalu berada di tengah wrapper yang mungkin lebih besar */
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-    /* Memaksa wrapper untuk memiliki rasio 1:1 secara visual saat layar besar */
     width: min(90vw, 60vh); 
     
-    /* PENTING untuk positioning drop-overlay */
     position: relative; 
     cursor: pointer;
 }
 
 canvas {
-  border: 1px solid #ccc; /* Border normal kanvas */
+  border: 1px solid #ccc; 
   max-width: 100%;
   height: auto;
   display: block;
 }
 
-/* STYLE BARU UNTUK DROP AREA/OVERLAY */
+/* STYLE UNTUK DROP AREA/OVERLAY */
 .drop-overlay {
     position: absolute;
     top: 0;
@@ -57,42 +53,73 @@ canvas {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.9); /* Latar putih transparan */
+    background-color: rgba(255, 255, 255, 0.9);
     color: #333;
     font-size: 1.2rem;
     text-align: center;
     border: 3px dashed transparent; 
     transition: opacity 0.3s, background-color 0.2s;
-    z-index: 10; /* Pastikan di atas canvas */
+    z-index: 10;
 }
 
-/* KELAS BARU: Untuk menampilkan border dotted/dashed saat siap unggah */
 .drop-ready {
-    border: 3px dashed #999; /* Border abu-abu putus-putus saat siap */
+    border: 3px dashed #999;
 }
 
-/* Visual Feedback saat file diseret */
 .drag-over {
-    border: 3px dashed #1e90ff; /* Border biru putus-putus */
-    background-color: rgba(173, 216, 230, 0.7); /* Latar biru muda */
+    border: 3px dashed #1e90ff; 
+    background-color: rgba(173, 216, 230, 0.7);
 }
 
-/* Kelas untuk menonaktifkan drop area (setelah gambar diunggah) */
 .drop-disabled {
     opacity: 0;
-    pointer-events: none; /* Menonaktifkan interaksi mouse pada overlay */
+    pointer-events: none;
 }
 
 img {
   width: 100%;
   height: auto;
 }
+
+/* --- PERUBAHAN UTAMA DI SINI --- */
 .controls {
   margin-top: 1rem;
+  display: flex; /* Menggunakan Flexbox untuk tata letak horizontal */
+  gap: 0.5rem;   /* Jarak antar tombol */
+  width: 100%;  /* Memastikan controls mengisi lebar twibbon-app */
 }
 
-button, input[type="file"] {
+/* Reset default styling untuk semua button dalam controls */
+.controls button {
+  margin: 0; /* Hapus margin yang sudah ada */
+  padding: 0; /* Hapus padding default */
+  font-size: 1rem;
+}
+
+/* 1. Tombol Twibbon: fleksibel, mengisi sisa ruang */
+#btnTwibbon {
+  flex-grow: 1; /* Ambil semua ruang yang tersisa */
+  padding: 0.5rem 1rem; /* Tambahkan padding agar terlihat seperti tombol normal */
+}
+
+/* 2 & 3. Tombol Unduh & Bagikan: 40x40 persegi */
+#btnDownload, #btnShare {
+  width: 40px; /* Lebar tetap */
+  min-width: 40px; /* Pastikan tidak menyusut */
+  height: 40px; /* Tinggi tetap (sehingga persegi) */
+  flex-shrink: 0; /* Jangan biarkan menyusut */
+  
+  /* Posisikan ikon di tengah tombol */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem; /* Atur ukuran ikon */
+}
+
+/* Hapus aturan lama untuk button, input[type="file"] jika ada */
+/* button, input[type="file"] { 
   margin: 0.5rem;
   padding: 0.5rem 1rem;
   font-size: 1rem;
-}
+} */
+/* Aturan ini telah diganti dengan yang lebih spesifik di atas. */
