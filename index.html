@@ -3,25 +3,24 @@ layout: default
 title: Halaman Utama
 ---
 
-    <div class="twibbon-app">
-        
-        <input type="file" id="uploadImage" accept="image/*" style="display: none;">
 
-        <div class="canvas-wrapper" id="dropArea"> 
-            <canvas id="twibbonCanvas"></canvas>
-            <div id="dropOverlay" class="drop-overlay">
-                Unggah atau seret gambar di sini
+<div class="twibbon-app">
+    <input type="file" id="uploadImage" accept="image/*" style="display: none;">
+
+    <div class="canvas-container">
+        <div class="canvas-sizer">
+            <div class="canvas-wrapper" id="dropArea"> 
+                <canvas id="twibbonCanvas"></canvas>
+                <div id="dropOverlay" class="drop-overlay">
+                    Unggah atau seret gambar di sini
+                </div>
             </div>
         </div>
-        
-        <div class="controls">
-            <!-- 1. Tombol Pasang Twibbon (akan fleksibel/flex-grow) -->
-            <button id="btnTwibbon">Pasang Twibbon</button> 
-            
-            <!-- 2. Tombol Unduh (40x40 dengan ikon) -->
-            <button id="btnDownload" title="Unduh Gambar"><i class="fas fa-download"></i></button> 
-            
-            <!-- 3. Tombol Bagikan (40x40 dengan ikon) -->
-            <button id="btnShare" title="Bagikan Link"><i class="fas fa-share-alt"></i></button> 
-        </div>
     </div>
+    
+    <div class="controls">
+        <button id="btnTwibbon">Pasang Twibbon</button> 
+        <button id="btnDownload" title="Unduh Gambar"><i class="fas fa-download"></i></button> 
+        <button id="btnShare" title="Bagikan Link"><i class="fas fa-share-alt"></i></button> 
+    </div>
+</div>
