@@ -137,3 +137,9 @@ img {
   font-size: 1.2rem; 
 }
 
+	@media (max-width: 700px) {
+    .twibbon-app {
+      margin: 0 auto;
+      width: auto;
+    }
+  }
