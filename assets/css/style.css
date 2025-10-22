@@ -100,6 +100,10 @@ canvas {
     pointer-events: none; 
 }
 
+.drop:hover {
+  background-color: bisque;
+}
+
 img {
   width: 100%;
   height: auto;
