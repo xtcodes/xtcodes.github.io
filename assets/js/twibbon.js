@@ -6,205 +6,181 @@ let overlayImage = null;
 const uploadInput = document.getElementById('uploadImage');
 const dropArea = document.getElementById('dropArea');
 const dropOverlay = document.getElementById('dropOverlay');
+const alertBox = document.getElementById('alert'); // elemen teks alert
+
+// --- Fungsi tampilkan pesan ---
+function showMessage(msg, color = "#d33") {
+  alertBox.textContent = msg;
+  alertBox.style.color = color;
+  alertBox.style.opacity = "1";
+
+  // Hilangkan setelah 3 detik
+  setTimeout(() => {
+    alertBox.style.opacity = "0";
+    alertBox.textContent = "";
+  }, 3000);
+}
 
 // --- Fungsi Helper ---
-
-// Tentukan ukuran SISI persegi: Ambil ukuran visual aktual dari elemen dropArea (piksel)
 function getSquareSize() {
-  // clientWidth memberikan lebar area visual yang ditentukan oleh CSS
   return dropArea.clientWidth; 
 }
 
-// Mengaktifkan atau menonaktifkan drop area
 function toggleUploadState(enabled) {
-    if (enabled) {
-        // Aktifkan upload: tampilkan overlay, border 'drop-ready', dan pasang listeners
-        dropOverlay.classList.remove('drop-disabled');
-        dropOverlay.classList.add('drop-ready');
-        setupDropListeners();
-        dropArea.style.cursor = 'pointer';
-    } else {
-        // Nonaktifkan upload: sembunyikan overlay, hapus border, dan hapus listeners
-        dropOverlay.classList.add('drop-disabled');
-        dropOverlay.classList.remove('drop-ready');
-        removeDropListeners();
-        dropArea.style.cursor = 'default';
-    }
+  if (enabled) {
+    dropOverlay.classList.remove('drop-disabled');
+    dropOverlay.classList.add('drop-ready');
+    setupDropListeners();
+    dropArea.style.cursor = 'pointer';
+  } else {
+    dropOverlay.classList.add('drop-disabled');
+    dropOverlay.classList.remove('drop-ready');
+    removeDropListeners();
+    dropArea.style.cursor = 'default';
+  }
 }
 
-// Fungsi draw (memaksa 1:1 dan gambar menggunakan metode "cover")
 function drawCanvas() {
   if(!userImage) return setCanvasSize(); 
 
   const squareSize = getSquareSize();
-
-  // 1. Atur dimensi internal canvas (PIKSEL) diatur berdasarkan ukuran visual
   canvas.width = squareSize;
   canvas.height = squareSize;
 
-  // 2. Hitung skala dan posisi untuk menggambar gambar (metode "cover")
   const scale = Math.max(squareSize / userImage.width, squareSize / userImage.height);
-  
   const scaledWidth = userImage.width * scale;
   const scaledHeight = userImage.height * scale;
-  
   const offsetX = (squareSize - scaledWidth) / 2;
   const offsetY = (squareSize - scaledHeight) / 2;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(userImage, offsetX, offsetY, scaledWidth, scaledHeight);
 
-  if(overlayImage){
+  if (overlayImage) {
     ctx.drawImage(overlayImage, 0, 0, canvas.width, canvas.height);
   }
-  
+
   toggleUploadState(false);
 }
 
-// Tentukan ukuran canvas (selalu 1:1) saat pertama kali atau tidak ada gambar
 function setCanvasSize() {
   const squareSize = getSquareSize();
-  
-  if(!userImage){
-    // Atur canvas ke ukuran persegi yang dibaca dari CSS
-    canvas.width = squareSize;
-    canvas.height = squareSize;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    ctx.fillStyle = '#fff'; 
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    toggleUploadState(true); // Aktifkan drop area
-  } else {
-    drawCanvas();
-  }
+  canvas.width = squareSize;
+  canvas.height = squareSize;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#fff'; 
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  toggleUploadState(true);
 }
 
-
-// --- Handler Drag/Drop ---
-
+// --- Drag/Drop ---
 function handleDragOver(e) {
-    e.preventDefault(); 
-    dropOverlay.classList.add('drag-over');
+  e.preventDefault(); 
+  dropOverlay.classList.add('drag-over');
 }
 
 function handleDragLeave(e) {
-    e.preventDefault();
-    dropOverlay.classList.remove('drag-over');
+  e.preventDefault();
+  dropOverlay.classList.remove('drag-over');
 }
 
 function handleDrop(e) {
-    e.preventDefault();
-    dropOverlay.classList.remove('drag-over');
-
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-        processFile(files[0]);
-    }
+  e.preventDefault();
+  dropOverlay.classList.remove('drag-over');
+  const files = e.dataTransfer.files;
+  if (files.length > 0) processFile(files[0]);
 }
 
-// Pasang listeners
 function setupDropListeners() {
-    removeDropListeners(); 
-    dropArea.addEventListener('dragover', handleDragOver);
-    dropArea.addEventListener('dragleave', handleDragLeave);
-    dropArea.addEventListener('drop', handleDrop);
-    document.body.addEventListener('dragover', (e) => e.preventDefault());
-    document.body.addEventListener('drop', (e) => e.preventDefault());
+  removeDropListeners(); 
+  dropArea.addEventListener('dragover', handleDragOver);
+  dropArea.addEventListener('dragleave', handleDragLeave);
+  dropArea.addEventListener('drop', handleDrop);
+  document.body.addEventListener('dragover', (e) => e.preventDefault());
+  document.body.addEventListener('drop', (e) => e.preventDefault());
 }
 
-// Hapus listeners
 function removeDropListeners() {
-    dropArea.removeEventListener('dragover', handleDragOver);
-    dropArea.removeEventListener('dragleave', handleDragLeave);
-    dropArea.removeEventListener('drop', handleDrop);
+  dropArea.removeEventListener('dragover', handleDragOver);
+  dropArea.removeEventListener('dragleave', handleDragLeave);
+  dropArea.removeEventListener('drop', handleDrop);
 }
 
-// --- Logika Pemrosesan File ---
-
+// --- Proses File ---
 function processFile(file) {
-    if(!file || !file.type.startsWith('image/')) return;
-    
-    toggleUploadState(false); 
+  if(!file || !file.type.startsWith('image/')) {
+    showMessage("File harus berupa gambar!");
+    return;
+  }
+  toggleUploadState(false); 
 
-    const img = new Image();
-    img.onload = () => {
-        userImage = img;
-        overlayImage = null; 
-        drawCanvas();
-        URL.revokeObjectURL(img.src); 
-    }
-    img.onerror = () => {
-        alert("Gagal memuat gambar. Coba lagi.");
-        userImage = null;
-        setCanvasSize(); 
-    }
-    img.src = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    userImage = img;
+    overlayImage = null; 
+    drawCanvas();
+    URL.revokeObjectURL(img.src); 
+    showMessage("Gambar berhasil diunggah ✅", "#008000");
+  };
+  img.onerror = () => {
+    userImage = null;
+    setCanvasSize(); 
+    showMessage("Gagal memuat gambar. Coba lagi.");
+  };
+  img.src = URL.createObjectURL(file);
 }
 
-// --- Event Listener Utama ---
-
-// Trigger input file saat drop area diklik, hanya jika belum ada gambar
+// --- Event Upload ---
 dropArea.addEventListener('click', () => {
-    if (userImage === null) {
-        uploadInput.click();
-    }
+  if (userImage === null) uploadInput.click();
 });
 
-// Tangani perubahan dari input file yang tersembunyi
 uploadInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if(file) processFile(file);
-    e.target.value = ''; // Reset input
+  const file = e.target.files[0];
+  if(file) processFile(file);
+  e.target.value = ''; 
 });
 
-
-// Pasang twibbon
+// --- Tombol Twibbon ---
 document.getElementById('btnTwibbon').addEventListener('click', ()=>{
-  if(!userImage) return alert("Upload dulu gambar!");
+  if(!userImage) return showMessage("Upload dulu gambar!");
   const overlay = new Image();
   overlay.crossOrigin = "Anonymous"; 
   overlay.onload = () => {
     overlayImage = overlay;
     drawCanvas();
-  }
+    showMessage("Twibbon berhasil diterapkan ✅", "#008000");
+  };
   overlay.src = '/assets/img/twibbon.png'; 
 });
 
-// Unduh dengan nama file otomatis (nama hosting + tanggal)
+// --- Tombol Unduh (nama hosting + tanggal) ---
 document.getElementById('btnDownload').addEventListener('click', ()=>{
-  if (!userImage) return alert("Tidak ada gambar!");
-
-  // Ambil nama hosting, contoh: twibbonku.com
+  if (!userImage) return showMessage("Tidak ada gambar!");
   const hostname = window.location.hostname.replace(/^www\./, '') || 'twibbon';
-
-  // Ambil tanggal saat ini
   const now = new Date();
   const day = String(now.getDate()).padStart(2, '0');
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const year = now.getFullYear();
-
-  // Gabungkan jadi nama file
   const filename = `${hostname}_${day}-${month}-${year}.png`;
 
-  // Proses unduh
   const link = document.createElement('a');
   try {
     link.download = filename;
     link.href = canvas.toDataURL('image/png');
     link.click();
+    showMessage(`Gambar diunduh: ${filename}`, "#008000");
   } catch (error) {
-    alert("Gagal mengunduh. Pastikan gambar twibbon dimuat dari sumber yang sama.");
     console.error(error);
+    showMessage("Gagal mengunduh gambar!");
   }
 });
 
-// Bagikan menggunakan Web Share API
+// --- Tombol Bagikan (Web Share API) ---
 document.getElementById('btnShare').addEventListener('click', async ()=>{
-  if (!userImage) return alert("Tidak ada gambar!");
+  if (!userImage) return showMessage("Tidak ada gambar!");
 
   try {
-    // Ubah hasil canvas jadi blob agar bisa dibagikan sebagai file
     const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
     const file = new File([blob], 'twibbon.png', { type: 'image/png' });
 
@@ -214,19 +190,18 @@ document.getElementById('btnShare').addEventListener('click', async ()=>{
         text: 'Lihat hasil twibbon saya!',
         files: [file],
       });
+      showMessage("Berhasil dibagikan 🎉", "#008000");
     } else {
-      alert("Perangkat ini tidak mendukung fitur Web Share API dengan file.");
+      showMessage("Browser tidak mendukung fitur berbagi file ini.");
     }
   } catch (error) {
     console.error(error);
-    alert("Gagal membagikan gambar. Pastikan browser mendukung Web Share API.");
+    showMessage("Gagal membagikan gambar!");
   }
 });
 
-// Responsive saat resize
-window.addEventListener('resize', () => {
-  setCanvasSize(); 
-});
+// --- Resize Responsif ---
+window.addEventListener('resize', () => setCanvasSize());
 
-// Panggil saat halaman dimuat untuk inisialisasi awal
+// --- Inisialisasi Awal ---
 setCanvasSize();
