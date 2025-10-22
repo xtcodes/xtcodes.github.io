@@ -17,7 +17,7 @@ header {
 .twibbon-app {
   margin-top: 2rem;
   /* Batasi ukuran visual maksimum app relatif terhadap viewport */
-  max-width: 500px; /* Contoh lebar maksimum di desktop */
+  max-width: 600px; /* Contoh lebar maksimum di desktop */
   width: 90%; /* Selalu 90% dari lebar parent (body) */
 }
 
